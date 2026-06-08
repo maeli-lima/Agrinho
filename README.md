@@ -1,5 +1,3 @@
-# Agrinho (Agro forte, futuro sustentável: equilíbrio entre produção e meio ambiente)
-Projeto desenvolvido para o concurso Agrinho.
 # AgroFuturo 2026 — Inteligência Artificial no Campo
 
 ## 🌾 Tema da Página
