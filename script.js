@@ -1,130 +1,130 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================================================
-    // 1. GERENCIAMENTO COMPONENTE ACCORDION (EXPANSÍVEL)
+    // 1. COMPONENTE ACCORDION (EXPANSÃO DINÂMICA VIA SCROLLHEIGHT)
     // ==========================================================================
-    const headers = document.querySelectorAll('.accordion-header');
+    const gatilhosAccordion = document.querySelectorAll('.gatilho-accordion');
 
-    headers.forEach(header => {
-        header.addEventListener('click', function() {
-            const item = this.parentElement;
-            const content = this.nextElementSibling;
-            
-            // Verifica se o item já está ativo
-            const estaAtivo = item.classList.contains('ativo');
-            
-            // Fecha todos os accordions abertos antes de abrir o atual (Opcional - Estilo Sanfona)
-            document.querySelectorAll('.accordion-item').forEach(i => {
-                i.classList.remove('ativo');
-                i.querySelector('.accordion-content').style.maxHeight = null;
+    gatilhosAccordion.forEach(gatilho => {
+        gatilho.addEventListener('click', function() {
+            const caixaPai = this.parentElement;
+            const painelConteudo = this.nextElementSibling;
+            const estaAberto = caixaPai.classList.contains('aberto');
+
+            // Fecha painéis ativos para manter um comportamento limpo e focado
+            document.querySelectorAll('.caixa-dobravel').forEach(item => {
+                item.classList.remove('aberto');
+                item.querySelector('.painel-accordion').style.maxHeight = null;
+                item.querySelector('.gatilho-accordion').setAttribute('aria-expanded', 'false');
             });
 
-            // Se não estava ativo, abre o atual calculando o scrollHeight exato do conteúdo
-            if (!estaAtivo) {
-                item.classList.add('ativo');
-                content.style.maxHeight = content.scrollHeight + "px";
+            // Se não estava aberto, realiza a abertura controlada por código
+            if (!estaAberto) {
+                caixaPai.classList.add('aberto');
+                this.setAttribute('aria-expanded', 'true');
+                painelConteudo.style.maxHeight = painelConteudo.scrollHeight + "px";
             }
         });
     });
 
     // ==========================================================================
-    // 2. PAINEL E RECURSOS DE ACESSIBILIDADE NATIVA
+    // 2. PAINEL FLUTUANTE DE ACESSIBILIDADE
     // ==========================================================================
-    const btnPainelToggle = document.getElementById('btn-painel-toggle');
-    const menuAcessibilidade = document.getElementById('menu-acessibilidade');
-    const btnAumentarFonte = document.getElementById('btn-aumentar-fonte');
-    const btnDiminuirFonte = document.getElementById('btn-diminuir-fonte');
-    const btnTemaToggle = document.getElementById('btn-tema-toggle');
-    const btnOuvir = document.getElementById('btn-ouvir');
-    const btnPararOuvir = document.getElementById('btn-parar-ouvir');
+    const gatilhoWidget = document.getElementById('gatilho-widget');
+    const menuRecursosVoz = document.getElementById('menu-recursos-voz');
+    const btnFonteAumentar = document.getElementById('fonte-aumentar');
+    const btnFonteDiminuir = document.getElementById('fonte-diminuir');
+    const btnAlternarContraste = document.getElementById('alternar-contraste');
 
-    let escalaFonte = 100; // Porcentagem inicial da fonte base do HTML
+    let percentualFonte = 100;
 
-    // Toggle de exibição do painel flutuante
-    btnPainelToggle.addEventListener('click', () => {
-        menuAcessibilidade.classList.toggle('escondido');
+    // Toggle de visibilidade do menu flutuante
+    gatilhoWidget.addEventListener('click', () => {
+        menuRecursosVoz.classList.toggle('oculto');
     });
 
-    // Acessibilidade: Aumentar Fonte
-    btnAumentarFonte.addEventListener('click', () => {
-        if (escalaFonte < 140) {
-            escalaFonte += 10;
-            document.documentElement.style.fontSize = `${escalaFonte}%`;
+    // Controle de dimensionamento acessível de texto
+    btnFonteAumentar.addEventListener('click', () => {
+        if (percentualFonte < 140) {
+            percentualFonte += 10;
+            document.documentElement.style.fontSize = `${percentualFonte}%`;
         }
     });
 
-    // Acessibilidade: Diminuir Fonte
-    btnDiminuirFonte.addEventListener('click', () => {
-        if (escalaFonte > 80) {
-            escalaFonte -= 10;
-            document.documentElement.style.fontSize = `${escalaFonte}%`;
+    btnFonteDiminuir.addEventListener('click', () => {
+        if (percentualFonte > 85) {
+            percentualFonte -= 10;
+            document.documentElement.style.fontSize = `${percentualFonte}%`;
         }
     });
 
-    // Acessibilidade: Modo Claro/Escuro alternável
-    btnTemaToggle.addEventListener('click', () => {
-        document.body.classList.toggle('modo-claro');
+    // Alternador de Alto Contraste (Modo Claro/Escuro)
+    btnAlternarContraste.addEventListener('click', () => {
+        document.body.classList.toggle('modo-claro-ativo');
     });
 
     // ==========================================================================
-    // 3. SPEECH SYNTHESIS API (LEITURA APENAS DO CONTEÚDO PRINCIPAL)
+    // 3. LEITURA POR VOZ NATIVA (SPEECH SYNTHESIS API)
     // ==========================================================================
-    let sinteseVoz = window.speechSynthesis;
-    let utterance = null;
+    const btnAudioLer = document.getElementById('audio-ler');
+    const btnAudioParar = document.getElementById('audio-parar');
+    
+    const sintetizador = window.speechSynthesis;
+    let emissorVoz = null;
 
-    btnOuvir.addEventListener('click', () => {
-        // Cancela qualquer leitura em andamento para não encavalar
-        sinteseVoz.cancel();
+    btnAudioLer.addEventListener('click', () => {
+        // Interrompe leituras prévias ativas
+        sintetizador.cancel();
 
-        // Alvo estrito: Captura o texto puramente do contêiner do artigo principal
-        const elementoAlvo = document.getElementById('conteudo-principal');
+        // Alvo semântico estrito de extração de conteúdo textual
+        const containerLeitura = document.getElementById('leitura-foco');
         
-        // Clonamos o nó para realizar limpezas cirúrgicas antes de ler o texto
-        const cloneConteudo = elementoAlvo.cloneNode(true);
-        
-        // Remove elementos indesejáveis da leitura (formulários, botões e accordions fechados/headers redundantes se necessário)
-        const elementosParaIgnorar = cloneConteudo.querySelectorAll('button, form, aside, textarea, label, .area-comentarios');
-        elementosParaIgnorar.forEach(el => el.remove());
+        // Clonagem para filtragem cirúrgica e preservação da árvore viva original
+        const cloneFiltrado = containerLeitura.cloneNode(true);
 
-        const textoParaLer = cloneConteudo.innerText.trim();
+        // Expulsão explícita de elementos interativos e formulários
+        const tagsIgnoradas = cloneFiltrado.querySelectorAll('button, form, aside, textarea, label, h3, .container-comentarios');
+        tagsIgnoradas.forEach(elemento => elemento.remove());
 
-        if (textoParaLer) {
-            utterance = new SpeechSynthesisUtterance(textoParaLer);
-            utterance.lang = 'pt-BR';
-            utterance.rate = 1.0; // Velocidade normal de leitura
-            
-            sinteseVoz.speak(utterance);
+        const textoLimpo = cloneFiltrado.innerText.replace(/\s+/g, ' ').trim();
+
+        if (textoLimpo) {
+            emissorVoz = new SpeechSynthesisUtterance(textoLimpo);
+            emissorVoz.lang = 'pt-BR';
+            emissorVoz.rate = 1.0;
+
+            sintetizador.speak(emissorVoz);
         }
     });
 
-    btnPararOuvir.addEventListener('click', () => {
-        if (sinteseVoz.speaking) {
-            sinteseVoz.cancel();
+    btnAudioParar.addEventListener('click', () => {
+        if (sintetizador.speaking) {
+            sintetizador.cancel();
         }
     });
 
     // ==========================================================================
-    // 4. INTERAÇÕES DE FORMULÁRIO (SIMULAÇÃO REGRAS CLEAN CODE)
+    // 4. INTERAÇÕES DE ENVIOS (SIMULAÇÕES DE SUBMISSÃO)
     // ==========================================================================
-    const formSeminario = document.getElementById('form-seminario');
-    formSeminario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Inscrição realizada com sucesso! Verifique seu e-mail corporativo para o link de acesso.');
-        formSeminario.reset();
+    const formCadastro = document.getElementById('cadastro-seminario');
+    formCadastro.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+        alert('Cadastro corporativo recebido com sucesso para o Seminário AgroFuturo 2026!');
+        formCadastro.reset();
     });
 
-    const formComentario = document.getElementById('form-comentario');
-    const textoComentario = document.getElementById('texto-comentario');
-    const listaComentarios = document.getElementById('lista-comentarios');
+    const formOpiniao = document.getElementById('formulario-opiniao');
+    const campoTextoComentario = document.getElementById('campo-texto-comentario');
+    const muralComentarios = document.getElementById('mural-comentarios');
 
-    formComentario.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const novoComentario = document.createElement('div');
-        novoComentario.classList.add('comentario-item');
-        novoComentario.textContent = textoComentario.value;
-        
-        listaComentarios.prepend(novoComentario);
-        textoComentario.value = '';
+    formOpiniao.addEventListener('submit', (evento) => {
+        evento.preventDefault();
+
+        const boxComentario = document.createElement('div');
+        boxComentario.classList.add('item-comentario-usuario');
+        boxComentario.textContent = campoTextoComentario.value;
+
+        muralComentarios.prepend(boxComentario);
+        campoTextoComentario.value = '';
     });
 });
