@@ -1,8 +1,7 @@
 /* ==========================================================================
-   VARIÁVEIS DE DESIGN SYSTEM (TEMA ESCURO INDUSTRIAL COMO PADRÃO)
+   VARIÁVEIS DO DESIGN SYSTEM (PADRÃO TEMA ESCURO CYBER-AGRO)
    ========================================================================== */
 :root {
-    /* Paleta Exigida */
     --preto: #060913;
     --azul-metalico: #0E1626;
     --azul-profundo: #16223F;
@@ -13,36 +12,32 @@
     --branco: #FFFFFF;
     --cinza-texto: #B0BCD0;
 
-    /* Configurações Globais Customizáveis */
     --font-stack: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --curvatura-componente: 16px;
-    --sombra-card-futurista: 0 8px 32px 0 rgba(0, 163, 224, 0.08);
-    --borda-vidro: 1px solid rgba(255, 255, 255, 0.06);
     --tempo-animacao: 0.25s ease-in-out;
 }
 
-/* Alteração Semântica para o Modo Claro via Injeção de Classe */
+/* Inversão dinâmica para Modo Claro */
 body.modo-claro-ativo {
     --preto: #F0F4F8;
     --azul-metalico: #FFFFFF;
     --azul-profundo: #E1E8F0;
     --branco: #0A0F1D;
     --cinza-texto: #334155;
-    background-color: var(--preto);
 }
 
 /* ==========================================================================
-   RESETS E COMPORTAMENTOS BASE
+   RESETS E CONFIGURAÇÕES DE RESPONSIVIDADE BASE
    ========================================================================== */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Garante que paddings não estourem a largura dos elementos */
 }
 
 html {
     scroll-behavior: smooth;
-    font-size: 16px;
+    font-size: 16px; /* Tamanho base para cálculo de REM */
 }
 
 body {
@@ -51,6 +46,13 @@ body {
     color: var(--branco);
     line-height: 1.75;
     transition: background-color var(--tempo-animacao);
+    overflow-x: hidden; /* Impede barra de rolagem horizontal indesejada em celulares */
+}
+
+img {
+    max-width: 100%; /* Impede a imagem de ficar maior que a tela do celular */
+    height: auto;
+    display: block;
 }
 
 strong {
@@ -59,12 +61,12 @@ strong {
 }
 
 /* ==========================================================================
-   HEADER E NAVEGAÇÃO PREMIUM
+   HEADER FLEXÍVEL
    ========================================================================== */
 .header-principal {
     background-color: rgba(6, 9, 19, 0.8);
     backdrop-filter: blur(12px);
-    border-bottom: var(--borda-vidro);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     position: sticky;
     top: 0;
     z-index: 999;
@@ -73,26 +75,31 @@ strong {
 .container-nav {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 1.2rem clamp(1rem, 4vw, 2.5rem);
+    padding: 1.2rem clamp(1rem, 4vw, 2.5rem); /* Padding dinâmico conforme tela diminui */
     display: flex;
+    flex-wrap: wrap; /* Permite que o menu quebre linha em telas micro-celulares */
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .logo-tech {
     font-size: 1.6rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
 }
 
 .logo-tech span {
     color: var(--azul-celeste);
 }
 
+.links-navegacao {
+    display: flex;
+    gap: 1.5rem;
+}
+
 .links-navegacao a {
     color: var(--cinza-texto);
     text-decoration: none;
-    margin-left: 2rem;
     font-weight: 500;
     font-size: 0.95rem;
     transition: color var(--tempo-animacao);
@@ -103,41 +110,24 @@ strong {
 }
 
 /* ==========================================================================
-   HERO BANNER SECTION
+   HERO BANNER FLUIDO (Ajustável por clamp e Viewport)
    ========================================================================== */
 .hero-tecnologico {
-    background: radial-gradient(circle at top right, rgba(0, 230, 118, 0.12), transparent 45%),
-                radial-gradient(circle at bottom left, rgba(0, 163, 224, 0.1), transparent 40%),
-                var(--azul-metalico);
-    padding: clamp(4rem, 12vh, 9rem) clamp(1rem, 4vw, 2.5rem);
+    background: radial-gradient(circle at top right, rgba(0, 230, 118, 0.1), transparent 45%), var(--azul-metalico);
+    padding: clamp(3rem, 10vh, 7rem) clamp(1rem, 4vw, 2.5rem);
     text-align: center;
-    border-bottom: var(--borda-vidro);
 }
 
-.wrapper-hero {
-    max-width: 950px;
-    margin: 0 auto;
-}
-
-.tag-topo {
-    color: var(--ouro-premium);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    display: inline-block;
-    margin-bottom: 1rem;
-}
-
+/* Tipografia Inteligente com Clamp: tamanho calcula sozinho baseando-se no dispositivo */
 .titulo-principal-hero {
-    font-size: clamp(2.2rem, 5.5vw, 4rem);
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
     font-weight: 800;
-    line-height: 1.15;
+    line-height: 1.2;
     margin-bottom: 1.5rem;
-    letter-spacing: -1px;
 }
 
 .subtitulo-principal-hero {
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-size: clamp(1rem, 2vw, 1.25rem);
     color: var(--cinza-texto);
     max-width: 750px;
     margin: 0 auto 2.5rem auto;
@@ -148,119 +138,80 @@ strong {
     background-color: var(--azul-celeste);
     color: #FFFFFF;
     text-decoration: none;
-    padding: 1rem 2.2rem;
+    padding: 0.9rem 2rem;
     border-radius: var(--curvatura-componente);
     font-weight: 600;
-    box-shadow: 0 4px 20px rgba(0, 163, 224, 0.3);
     transition: var(--tempo-animacao);
 }
 
 .cta-banner:hover {
+    transform: translateY(-2px);
     background-color: var(--branco);
     color: var(--preto);
-    transform: translateY(-2px);
 }
 
 /* ==========================================================================
-   ARQUITETURA DE GRID RESPONSIVA (320px ATÉ 2560px)
+   MALHA GRID RESPONSIVA (Mágica de Adaptação de Dispositivos)
    ========================================================================== */
 .grid-principal {
     max-width: 1440px;
     margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 4vw, 2.5rem);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem);
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 3.5rem;
+    grid-template-columns: 1fr; /* Mobile: 1 coluna vertical que consome 100% da largura */
+    gap: 2.5rem;
 }
 
+/* Se a tela for maior que 1024px (Tablets em modo paisagem e Desktops) transiciona para 2 colunas */
 @media (min-width: 1024px) {
     .grid-principal {
-        grid-template-columns: 1fr 380px;
+        grid-template-columns: 1fr 360px; /* Coluna do artigo maleável + Formulário fixado na lateral */
         align-items: start;
     }
-}
-
-@media (min-width: 1600px) {
-    .grid-principal {
-        grid-template-columns: 1fr 420px;
-        gap: 5rem;
+    
+    .coluna-conversao {
+        position: sticky; /* Faz o formulário "flutuar" acompanhando a rolagem do usuário */
+        top: 100px;
     }
 }
 
 /* ==========================================================================
-   COLUNA DA ESQUERDA (TEXTOS E IMAGENS CONFIGURADAS)
+   ELEMENTOS INTERNOS E INTERATIVOS
    ========================================================================== */
 .conteudo-editorial p {
     font-size: 1.1rem;
     color: var(--cinza-texto);
-    margin-bottom: 1.8rem;
-}
-
-.lead-texto {
-    font-size: 1.3rem !important;
-    color: var(--branco) !important;
-    font-weight: 500;
+    margin-bottom: 1.5rem;
 }
 
 .citacao-premium {
     background: linear-gradient(90deg, var(--azul-profundo), transparent);
     border-left: 4px solid var(--ouro-premium);
-    padding: 2rem;
-    margin: 2.5rem 0;
-    border-radius: 0 var(--curvatura-componente) var(--curvatura-componente) 0;
+    padding: 1.5rem;
+    margin: 2rem 0;
     font-style: italic;
-    color: var(--branco);
 }
 
-/* Modelo Obrigatório de Imagens */
+/* Container de Imagem Seguro contra quebras */
 .imagem {
     width: 100%;
-    margin: 3rem 0;
+    margin: 2rem 0;
     border-radius: var(--curvatura-componente);
     overflow: hidden;
-    box-shadow: var(--sombra-card-futurista);
-    border: var(--borda-vidro);
-    transition: transform var(--tempo-animacao), box-shadow var(--tempo-animacao);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .imagem img {
     width: 100%;
-    height: auto;
-    display: block;
     object-fit: cover;
-    transition: transform 0.4s ease;
 }
 
-.imagem:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 230, 118, 0.15);
-}
-
-.imagem img:hover {
-    transform: scale(1.03);
-}
-
-/* Seção de Accordion Ultra-Moderna */
-.secao-ia-accordion {
-    margin: 4rem 0;
-}
-
-.subtitulo-secao {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    letter-spacing: -0.5px;
-}
-
-.descricao-ia {
-    color: var(--cinza-texto);
-    margin-bottom: 2rem;
-}
-
+/* Accordion Component */
 .caixa-dobravel {
     background-color: var(--azul-metalico);
     border-radius: var(--curvatura-componente);
-    margin-bottom: 1rem;
-    border: var(--borda-vidro);
+    margin-bottom: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     overflow: hidden;
 }
 
@@ -268,257 +219,124 @@ strong {
     width: 100%;
     background: none;
     border: none;
-    padding: 1.4rem 1.8rem;
+    padding: 1.2rem;
     text-align: left;
     color: var(--branco);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
 .gatilho-accordion::after {
     content: '+';
     color: var(--azul-celeste);
-    font-size: 1.5rem;
-    transition: transform var(--tempo-animacao);
 }
 
 .caixa-dobravel.aberto .gatilho-accordion::after {
-    transform: rotate(45deg);
+    content: '−';
     color: var(--amarelo-neon);
 }
 
 .painel-accordion {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
-    background-color: rgba(6, 9, 19, 0.3);
+    transition: max-height 0.25s ease-out;
 }
 
 .painel-accordion p {
-    padding: 0 1.8rem 1.8rem 1.8rem;
+    padding: 0 1.2rem 1.2rem 1.2rem;
+    font-size: 0.95rem;
     color: var(--cinza-texto);
-    font-size: 1rem;
-    margin: 0;
 }
 
-/* Área de Comentários Integrada */
-.container-comentarios {
-    background-color: var(--azul-metalico);
-    padding: 2.5rem;
-    border-radius: var(--curvatura-componente);
-    border: var(--borda-vidro);
-}
-
-#campo-texto-comentario {
-    width: 100%;
-    min-height: 110px;
-    background-color: var(--preto);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--curvatura-componente);
-    color: var(--branco);
-    padding: 1.2rem;
-    margin: 1.2rem 0;
-    resize: vertical;
-    font-family: inherit;
-}
-
-#campo-texto-comentario:focus {
-    outline: none;
-    border-color: var(--azul-celeste);
-}
-
-.btn-postar {
-    background-color: var(--verde-tech);
-    color: #000000;
-    border: none;
-    padding: 0.8rem 1.8rem;
-    font-weight: 700;
-    border-radius: var(--curvatura-componente);
-    cursor: pointer;
-    transition: var(--tempo-animacao);
-}
-
-.btn-postar:hover {
-    transform: opacity 0.8s;
-    background-color: var(--branco);
-}
-
-.mural-comentarios {
-    margin-top: 2rem;
-}
-
-.item-comentario-usuario {
-    background-color: rgba(255, 255, 255, 0.03);
-    padding: 1.2rem;
-    border-radius: var(--curvatura-componente);
-    margin-bottom: 1rem;
-    border-left: 4px solid var(--azul-celeste);
-}
-
-/* ==========================================================================
-   COLUNA DA DIREITA: FORMULÁRIO DE CAPTAÇÃO GLASSMORPHISM
-   ========================================================================== */
-.coluna-conversao {
-    position: sticky;
-    top: 100px;
-}
-
+/* Formulário Card Glassmorphism */
 .card-formulario-glass {
     background: rgba(14, 22, 38, 0.7);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(0, 163, 224, 0.2);
-    padding: 2.5rem 2rem;
+    padding: 2rem 1.5rem;
     border-radius: var(--curvatura-componente);
-    box-shadow: var(--sombra-card-futurista);
-}
-
-.card-formulario-glass h2 {
-    font-size: 1.35rem;
-    line-height: 1.4;
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-}
-
-.chamada-form {
-    color: var(--amarelo-neon);
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
 }
 
 .input-wrapper {
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.2rem;
 }
 
 .input-wrapper label {
     display: block;
-    font-size: 0.8rem;
-    color: var(--cinza-texto);
+    font-size: 0.75rem;
     margin-bottom: 0.4rem;
+    color: var(--cinza-texto);
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-.input-wrapper input {
+.input-wrapper input, textarea {
     width: 100%;
-    padding: 0.9rem 1.2rem;
+    padding: 0.8rem 1rem;
     background-color: var(--preto);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--curvatura-componente);
     color: var(--branco);
-    font-size: 1rem;
-    transition: border-color var(--tempo-animacao);
 }
 
-.input-wrapper input:focus {
-    outline: none;
-    border-color: var(--azul-celeste);
-}
-
-.btn-submeter-form {
+.btn-submeter-form, .btn-postar {
     width: 100%;
     background-color: var(--azul-celeste);
     color: var(--branco);
     border: none;
-    padding: 1.1rem;
-    font-size: 1rem;
+    padding: 1rem;
     font-weight: 700;
     border-radius: var(--curvatura-componente);
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 163, 224, 0.4);
     transition: var(--tempo-animacao);
 }
 
 .btn-submeter-form:hover {
     background-color: var(--verde-tech);
     color: #000000;
-    box-shadow: 0 4px 14px rgba(0, 230, 118, 0.4);
 }
 
 /* ==========================================================================
-   RODAPÉ DO WEBSITE
+   RODAPÉ E ACCESSIBILIDADE WIDGET
    ========================================================================== */
 .rodape-futurista {
     background-color: #03050a;
-    padding: 3rem clamp(1rem, 4vw, 2.5rem);
-    border-top: var(--borda-vidro);
-    margin-top: 6rem;
-}
-
-.alinhamento-rodape {
-    max-width: 1440px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
+    padding: 2rem 1rem;
     text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.tagline-agro {
-    font-size: 1.05rem;
-    font-weight: 500;
-}
-
-.links-fontes {
-    font-size: 0.85rem;
-    color: var(--cinza-texto);
-}
-
-.links-fontes a {
-    color: var(--azul-celeste);
-    text-decoration: none;
-    margin-left: 0.8rem;
-}
-
-.links-fontes a:hover {
-    text-decoration: underline;
-}
-
-/* ==========================================================================
-   PAINEL DE ACESSIBILIDADE FLUTUANTE (CANTO INFERIOR DIREITO)
-   ========================================================================== */
 .widget-acessibilidade {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
     z-index: 2000;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.8rem;
+    gap: 0.5rem;
 }
 
 .botao-flutuante-principal {
-    width: 56px;
-    height: 56px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: var(--azul-celeste);
-    color: var(--branco);
     border: none;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    transition: transform var(--tempo-animacao);
-}
-
-.botao-flutuante-principal:hover {
-    transform: scale(1.08);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
 .menu-interno-botoes {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
     background-color: var(--azul-profundo);
-    padding: 0.8rem;
+    padding: 0.6rem;
     border-radius: var(--curvatura-componente);
-    border: var(--borda-vidro);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .menu-interno-botoes.oculto {
@@ -529,16 +347,9 @@ strong {
     background-color: var(--azul-metalico);
     color: var(--branco);
     border: 1px solid rgba(255,255,255,0.08);
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.8rem;
     cursor: pointer;
     text-align: left;
-    white-space: nowrap;
-    transition: background-color var(--tempo-animacao);
-}
-
-.menu-interno-botoes button:hover {
-    background-color: var(--azul-celeste);
 }
