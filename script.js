@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ==========================================================================
-    // 1. COMPONENTE ACCORDION (EXPANSÃO DINÂMICA VIA SCROLLHEIGHT)
-    // ==========================================================================
+    // 1. MECÂNICA DE EXPANSÃO INTELIGENTE (ACCORDION)
     const gatilhosAccordion = document.querySelectorAll('.gatilho-accordion');
 
     gatilhosAccordion.forEach(gatilho => {
@@ -11,14 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const painelConteudo = this.nextElementSibling;
             const estaAberto = caixaPai.classList.contains('aberto');
 
-            // Fecha painéis ativos para manter um comportamento limpo e focado
+            // Fecha todos antes de abrir o novo, mantendo a tela do celular limpa e organizada
             document.querySelectorAll('.caixa-dobravel').forEach(item => {
                 item.classList.remove('aberto');
                 item.querySelector('.painel-accordion').style.maxHeight = null;
                 item.querySelector('.gatilho-accordion').setAttribute('aria-expanded', 'false');
             });
 
-            // Se não estava aberto, realiza a abertura controlada por código
+            // Se o painel não estava aberto, calcula a altura real dele e abre de forma suave
             if (!estaAberto) {
                 caixaPai.classList.add('aberto');
                 this.setAttribute('aria-expanded', 'true');
@@ -27,9 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==========================================================================
-    // 2. PAINEL FLUTUANTE DE ACESSIBILIDADE
-    // ==========================================================================
+    // 2. PAINEL DE CONTROLE DE ACESSIBILIDADE E RECONHECIMENTO DE FONTES
     const gatilhoWidget = document.getElementById('gatilho-widget');
     const menuRecursosVoz = document.getElementById('menu-recursos-voz');
     const btnFonteAumentar = document.getElementById('fonte-aumentar');
@@ -38,93 +34,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let percentualFonte = 100;
 
-    // Toggle de visibilidade do menu flutuante
     gatilhoWidget.addEventListener('click', () => {
         menuRecursosVoz.classList.toggle('oculto');
     });
 
-    // Controle de dimensionamento acessível de texto
+    // Altera proporcionalmente o tamanho da fonte mudando apenas a raiz do documento (tag HTML)
     btnFonteAumentar.addEventListener('click', () => {
-        if (percentualFonte < 140) {
+        if (percentualFonte < 130) {
             percentualFonte += 10;
             document.documentElement.style.fontSize = `${percentualFonte}%`;
         }
     });
 
     btnFonteDiminuir.addEventListener('click', () => {
-        if (percentualFonte > 85) {
+        if (percentualFonte > 90) {
             percentualFonte -= 10;
             document.documentElement.style.fontSize = `${percentualFonte}%`;
         }
     });
 
-    // Alternador de Alto Contraste (Modo Claro/Escuro)
     btnAlternarContraste.addEventListener('click', () => {
         document.body.classList.toggle('modo-claro-ativo');
     });
 
-    // ==========================================================================
-    // 3. LEITURA POR VOZ NATIVA (SPEECH SYNTHESIS API)
-    // ==========================================================================
+    // 3. LEITURA POR VOZ LIMPA (SpeechSynthesis API)
     const btnAudioLer = document.getElementById('audio-ler');
     const btnAudioParar = document.getElementById('audio-parar');
-    
     const sintetizador = window.speechSynthesis;
-    let emissorVoz = null;
 
     btnAudioLer.addEventListener('click', () => {
-        // Interrompe leituras prévias ativas
-        sintetizador.cancel();
+        sintetizador.cancel(); // Interrompe qualquer áudio travado na memória
 
-        // Alvo semântico estrito de extração de conteúdo textual
         const containerLeitura = document.getElementById('leitura-foco');
-        
-        // Clonagem para filtragem cirúrgica e preservação da árvore viva original
-        const cloneFiltrado = containerLeitura.cloneNode(true);
+        const cloneFiltrado = containerLeitura.cloneNode(true); // Cria uma cópia invisível do texto
 
-        // Expulsão explícita de elementos interativos e formulários
-        const tagsIgnoradas = cloneFiltrado.querySelectorAll('button, form, aside, textarea, label, h3, .container-comentarios');
+        // Exclui botões e inputs do áudio para o navegador ler apenas o artigo jornalístico limpo
+        const tagsIgnoradas = cloneFiltrado.querySelectorAll('button, form, aside, textarea, label, h2, h3');
         tagsIgnoradas.forEach(elemento => elemento.remove());
 
         const textoLimpo = cloneFiltrado.innerText.replace(/\s+/g, ' ').trim();
 
         if (textoLimpo) {
-            emissorVoz = new SpeechSynthesisUtterance(textoLimpo);
+            const emissorVoz = new SpeechSynthesisUtterance(textoLimpo);
             emissorVoz.lang = 'pt-BR';
-            emissorVoz.rate = 1.0;
-
             sintetizador.speak(emissorVoz);
         }
     });
 
     btnAudioParar.addEventListener('click', () => {
-        if (sintetizador.speaking) {
-            sintetizador.cancel();
-        }
+        sintetizador.cancel();
     });
 
-    // ==========================================================================
-    // 4. INTERAÇÕES DE ENVIOS (SIMULAÇÕES DE SUBMISSÃO)
-    // ==========================================================================
+    // 4. SIMULAÇÃO DE SUBMISSÃO E COMENTÁRIOS SÍNCRONOS
     const formCadastro = document.getElementById('cadastro-seminario');
     formCadastro.addEventListener('submit', (evento) => {
-        evento.preventDefault();
-        alert('Cadastro corporativo recebido com sucesso para o Seminário AgroFuturo 2026!');
+        evento.preventDefault(); // Impede o site de recarregar no celular ao clicar em enviar
+        alert('Inscrição recebida com sucesso para o Projeto Agrinho!');
         formCadastro.reset();
-    });
-
-    const formOpiniao = document.getElementById('formulario-opiniao');
-    const campoTextoComentario = document.getElementById('campo-texto-comentario');
-    const muralComentarios = document.getElementById('mural-comentarios');
-
-    formOpiniao.addEventListener('submit', (evento) => {
-        evento.preventDefault();
-
-        const boxComentario = document.createElement('div');
-        boxComentario.classList.add('item-comentario-usuario');
-        boxComentario.textContent = campoTextoComentario.value;
-
-        muralComentarios.prepend(boxComentario);
-        campoTextoComentario.value = '';
     });
 });
